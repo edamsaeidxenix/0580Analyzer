@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #ecfdfa;
+  --color-brand-100: #d0f7f0;
+  --color-brand-200: #a3ede1;
+  --color-brand-500: #14a38f;
+  --color-brand-600: #0d8576;
+  --color-brand-700: #0e6a5f;
+  --color-brand-800: #10554d;
+  --color-coral-500: #f2704f;
+  --color-coral-600: #de5434;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans Thaana", "MV Faseyha", sans-serif;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #f6f7f8;
+  color: #1c2024;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60;
+}
+@utility btn-primary {
+  @apply btn bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800;
+}
+@utility btn-secondary {
+  @apply btn border border-gray-300 bg-white text-gray-800 hover:bg-gray-50;
+}
+@utility btn-danger {
+  @apply btn border border-red-200 bg-white text-red-700 hover:bg-red-50;
+}
+@utility input {
+  @apply w-full rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-base outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100;
+}
+@utility label {
+  @apply mb-1 block text-sm font-medium text-gray-700;
+}
+@utility card {
+  @apply rounded-2xl border border-gray-200 bg-white;
+}
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm whitespace-nowrap text-gray-700 hover:border-brand-500;
+}
+@utility chip-active {
+  @apply chip border-brand-600 bg-brand-50 text-brand-800;
+}
+
+[lang="dv"],
+.thaana {
+  direction: rtl;
+}

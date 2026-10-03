@@ -1,0 +1,29 @@
+# Single-server setup: app + PostgreSQL + persistent image storage.
+#   cp .env.example .env   (then edit AUTH_SECRET, ADMIN_PHONES, SMS settings)
+#   docker compose up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: milandhoo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-milandhoo}
+      POSTGRES_DB: milandhoo_market
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on: [db]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://milandhoo:${POSTGRES_PASSWORD:-milandhoo}@db:5432/milandhoo_market
+    ports:
+      - "3000:3000"
+    volumes:
+      - uploads:/app/uploads
+
+volumes:
+  pgdata:
+  uploads:
