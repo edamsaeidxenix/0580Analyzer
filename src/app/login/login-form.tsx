@@ -47,7 +47,7 @@ export function LoginForm({ next }: { next: string }) {
       </p>
       {state.devCode && (
         <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Development mode — no SMS sent. Your code is <strong>{state.devCode}</strong>.
+          Demo mode — no SMS sent. Your code is <strong>{state.devCode}</strong>.
         </p>
       )}
       <input

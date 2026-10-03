@@ -70,6 +70,8 @@ npm run build
 
 ## Deploying
 
+For the planned setup (Neon + Vercel + your GoDaddy domain) follow [GO-LIVE.md](GO-LIVE.md).
+
 **Option A: one small server (simplest, about USD 5–10/month).** On any VPS with Docker:
 
 ```bash

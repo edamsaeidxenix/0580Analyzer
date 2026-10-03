@@ -11,8 +11,21 @@ export const LOCAL_UPLOAD_DIR = path.join(process.cwd(), "uploads");
 
 export class UploadError extends Error {}
 
+type Driver = "local" | "s3" | "neon";
+
+function driver(): Driver {
+  const value = process.env.STORAGE_DRIVER;
+  return value === "s3" || value === "neon" ? value : "local";
+}
+
 let s3: S3Client | undefined;
 function s3Client() {
+  if (driver() === "neon") {
+    // Neon Object Storage: credentials, endpoint and region come from the
+    // AWS_* variables Neon provides; it requires path-style addressing.
+    s3 ??= new S3Client({ forcePathStyle: true });
+    return s3;
+  }
   s3 ??= new S3Client({
     region: process.env.S3_REGION || "auto",
     endpoint: process.env.S3_ENDPOINT || undefined,
@@ -54,17 +67,22 @@ export async function saveImage(file: File, folder: string, maxSize = 1200): Pro
 
   const key = `${folder}/${randomUUID()}.webp`;
 
-  if (process.env.STORAGE_DRIVER === "s3") {
+  if (driver() !== "local") {
+    const neon = driver() === "neon";
+    const bucket = neon ? process.env.NEON_BUCKET || "uploads" : process.env.S3_BUCKET;
     await s3Client().send(
       new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET,
+        Bucket: bucket,
         Key: key,
         Body: data,
         ContentType: "image/webp",
         CacheControl: "public, max-age=31536000, immutable",
       }),
     );
-    return `${process.env.S3_PUBLIC_URL?.replace(/\/$/, "")}/${key}`;
+    const base = neon
+      ? `${process.env.AWS_ENDPOINT_URL_S3?.replace(/\/$/, "")}/${bucket}`
+      : process.env.S3_PUBLIC_URL?.replace(/\/$/, "");
+    return `${base}/${key}`;
   }
 
   const target = path.join(LOCAL_UPLOAD_DIR, key);

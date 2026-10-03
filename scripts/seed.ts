@@ -2,6 +2,7 @@
  * Seeds categories and the shared product catalogue.
  *   npm run db:seed           -> categories + catalogue (safe to run repeatedly)
  *   npm run db:seed -- --demo -> also adds demo shops and listings for testing
+ *   (SEED_DEMO=true does the same, e.g. on a hosted trial)
  */
 import "dotenv/config";
 import { eq } from "drizzle-orm";
@@ -95,7 +96,7 @@ async function main() {
   if (toAdd.length) await db.insert(catalogItems).values(toAdd);
   console.log(`Categories: ${cats.length}, catalogue items added: ${toAdd.length}`);
 
-  if (process.argv.includes("--demo")) await seedDemo(db, catId);
+  if (process.argv.includes("--demo") || process.env.SEED_DEMO === "true") await seedDemo(db, catId);
 
   await pool.end();
 }

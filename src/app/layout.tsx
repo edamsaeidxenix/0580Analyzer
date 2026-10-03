@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CartProvider } from "@/components/cart";
 import { BottomNav, DesktopNav } from "@/components/nav";
 import { getCurrentUser } from "@/lib/auth";
+import { isDemoLogin } from "@/lib/sms";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,6 +27,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col">
         <CartProvider>
+          {isDemoLogin() && (
+            <p className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900">
+              Demo version for testing — please don&apos;t place real orders yet.
+            </p>
+          )}
           <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/95 backdrop-blur">
             <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4">
               <Link href="/" className="flex items-center gap-2 font-bold text-brand-700">

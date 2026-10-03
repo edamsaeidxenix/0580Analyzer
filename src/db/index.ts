@@ -9,7 +9,8 @@ const pool =
   globalForDb.pool ??
   new Pool({
     connectionString: process.env.DATABASE_URL,
-    max: 10,
+    // Small pool: on serverless hosting each instance opens its own connections.
+    max: 5,
   });
 if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
 

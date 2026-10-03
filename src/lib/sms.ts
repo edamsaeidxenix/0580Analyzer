@@ -6,8 +6,16 @@ export function smsProvider(): "console" | "twilio" {
   return process.env.SMS_PROVIDER === "twilio" ? "twilio" : "console";
 }
 
+/**
+ * Demo mode: no SMS is sent and the sign-in code is shown on screen. Anyone can
+ * then sign in as any number, so it is only for trials, never for real orders.
+ */
+export function isDemoLogin(): boolean {
+  return process.env.DEMO_LOGIN === "true";
+}
+
 export function isDevSms(): boolean {
-  return smsProvider() === "console" && process.env.NODE_ENV !== "production";
+  return smsProvider() === "console" && (process.env.NODE_ENV !== "production" || isDemoLogin());
 }
 
 export async function sendSms(to: string, body: string): Promise<void> {
@@ -29,8 +37,8 @@ export async function sendSms(to: string, body: string): Promise<void> {
     return;
   }
 
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("SMS_PROVIDER=console cannot be used in production");
+  if (process.env.NODE_ENV === "production" && !isDemoLogin()) {
+    throw new Error("SMS_PROVIDER=console cannot be used in production (set DEMO_LOGIN=true for a trial)");
   }
   console.log(`[sms] to ${to}: ${body}`);
 }
